@@ -19,7 +19,8 @@ server.bind("0.0.0.0:4000", grpc.ServerCredentials.createInsecure());
 // add service
 server.addService(todoPackage.Todo.service, {
     "createTodo": createTodoController,
-    "readTodos": readTodosController
+    "readTodos": readTodosController,
+    "readTodosStream": readTodosStreamController
 });
 
 server.start();
@@ -30,11 +31,16 @@ function createTodoController(call, callback) {
     const todoItem = {
         "id": todos.length + 1,
         "text": call.request.text
-    }
+    };
     todos.push(todoItem);
     callback(null, todoItem);
 };
 
 function readTodosController(call, callback) {
     callback(null, {"items": todos});
+};
+
+function readTodosStreamController(call, callback) {
+    todos.forEach((item) => call.write(item));
+    call.end();
 };

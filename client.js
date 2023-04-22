@@ -28,3 +28,12 @@ client.readTodos({}, (error, response) => {
     if(error) console.log(`Ooops internal server error: ${error}`)
     console.log(`(readTodos) Recieved from server: ${JSON.stringify(response)}`);
 });
+
+// client will readTodosStream
+const call = client.readTodosStream();
+
+call.on("data", (item) => {
+    console.log(`(readTodosStream) Recivied data from server: ${JSON.stringify(item)}`);
+});
+
+call.on("end", (e) => console.log("server done!"));
